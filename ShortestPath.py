@@ -6,6 +6,8 @@ import random as rand
 #xpoints = np.array([0, 10])
 #ypoints = np.array([0, 10])
 
+
+# Grid class
 class Grid():
     xsize = 0
     ysize = 0
@@ -15,6 +17,8 @@ class Grid():
     obstacles = []
     fig, ax = plt.subplots(figsize=(10, 10))
 
+
+    # Creates grid and start point
     def __init__(self, yaxis, xaxis):
         self.xsize = xaxis
         self.ysize = yaxis
@@ -28,15 +32,15 @@ class Grid():
         self.ax.set_yticks(y_ticks[y_ticks])
         self.ax.grid()
         self.ax.plot(self.startpoint[0] - 0.5, self.startpoint[1] - 0.5, 'o')
-
         self.Matrix[self.ysize-1][0] = 1
         
-
+    # Converts the graph coordinates to the 2D array coordinates
     def graphToTable(self, xcor, ycor):
         newY = xcor -1
         newX = self.ysize - ycor 
         return([newX, newY]) 
 
+    # Generates an obstacle object given the xcoordinate and y coordinate
     def generate_Obstacle(self, xcor, ycor):
         newx = xcor-1
         newy = ycor-1
@@ -46,6 +50,7 @@ class Grid():
         self.Matrix[self.graphToTable(xcor, ycor)[0]][self.graphToTable(xcor, ycor)[1]] = 3
         print(self.Matrix)
 
+    # Creates a random end goal that is not on an object
     def createEndGoal(self):
         while (True):
             xcor = rand.randint(2, self.xsize)
@@ -63,10 +68,12 @@ class Grid():
         print(self.Matrix)
         self.endgoal = [xcor, ycor]
     
+    # Shows the graph
     def showGraph(self):
         plt.show()
 
     
+# Obstacle class
 class Obstacle():
     xcor = 0
     ycor = 0
