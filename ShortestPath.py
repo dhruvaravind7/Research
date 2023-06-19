@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 import random as rand
+import pdb
 
 #xpoints = np.array([0, 10])
 #ypoints = np.array([0, 10])
-
 
 # Grid class
 class Grid():
@@ -13,10 +13,10 @@ class Grid():
     ysize = 0
     startpoint =[1, 1]
     endgoal = []
+    currPos = [1,1]
     Matrix = [[]]
     obstacles = []
     fig, ax = plt.subplots(figsize=(10, 10))
-
 
     # Creates grid and start point
     def __init__(self, yaxis, xaxis):
@@ -40,15 +40,20 @@ class Grid():
         newX = self.ysize - ycor 
         return([newX, newY]) 
 
+    def tableToGraph(self, xcor, ycor):
+        newX = ycor + 1
+        newY = self.xsize - xcor
+        return([newX, newY])
     # Generates an obstacle object given the xcoordinate and y coordinate
     def generate_Obstacle(self, xcor, ycor):
-        newx = xcor-1
-        newy = ycor-1
+        if xcor == 1:
+            if ycor == 1:
+                return
         obst = Obstacle(xcor, ycor)
         self.obstacles.append(obst)
-        self.ax.add_patch(patches.Rectangle(xy=(newx, newy), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.ax.add_patch(patches.Rectangle(xy=(xcor-1, ycor-1), width=1, height=1, linewidth=1, color='red', fill=True))
         self.Matrix[self.graphToTable(xcor, ycor)[0]][self.graphToTable(xcor, ycor)[1]] = 3
-        print(self.Matrix)
+        #print(self.Matrix)
 
     # Creates a random end goal that is not on an object
     def createEndGoal(self):
@@ -63,16 +68,152 @@ class Grid():
             if (unique == True):
                 break
 
-        self.ax.plot(xcor - 0.5, ycor - 0.5, 'o', color = "green")
+        self.ax.add_patch(patches.Rectangle(xy=(xcor-1, ycor-1), width=1, height=1, linewidth=1, color='green', fill=True))
         self.Matrix[self.graphToTable(xcor, ycor)[0]][self.graphToTable(xcor, ycor)[1]] = 2
-        print(self.Matrix)
+        #print(self.Matrix)
         self.endgoal = [xcor, ycor]
     
+    def goto(self, coordinates):
+        #print(self.currPos)
+        graphX = self.graphToTable(self.currPos[0], self.currPos[1])[0]
+        graphY = self.graphToTable(self.currPos[0], self.currPos[1])[1]
+        self.Matrix[graphX][graphY] = 0
+        
+        newX = self.graphToTable(coordinates[0], coordinates[1])[0]
+        newY = self.graphToTable(coordinates[0], coordinates[1])[1]
+        self.Matrix[newX][newY] = 1
+
+        xchange = [self.currPos[0] -0.5, coordinates[0] -0.5]
+        ychange = [self.currPos[1] -0.5, coordinates[1] -0.5]
+
+        self.currPos = coordinates
+
+        self.ax.plot(xchange, ychange, color= "blue")
+        self.ax.plot(self.currPos[0]-0.5, self.currPos[1]-0.5, "o", color = "blue")
+
+    def getNeighbors(self, visited):
+        tableX = self.graphToTable(self.currPos[0], self.currPos[1])[0]
+        tableY = self.graphToTable(self.currPos[0], self.currPos[1])[1]
+        neighbors = []
+        reached = False
+
+        # Left neighbor
+        if tableY != 0:
+            if self.Matrix[tableX][tableY-1] != 3:
+                graphX = self.tableToGraph(tableX, tableY-1)[0]
+                graphY = self.tableToGraph(tableX, tableY-1)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                if reached == False:    
+                    neighbors.append([graphX, graphY])
+                    neighbors.append(self.currPos)
+        
+        # Top neighbor
+        
+        reached = False
+        # Botton neighbor
+        if tableX != (self.ysize - 1):
+            if self.Matrix[tableX+1][tableY] != 3:
+                graphX = self.tableToGraph(tableX+1, tableY)[0]
+                graphY = self.tableToGraph(tableX+1, tableY)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                if reached == False:
+                    neighbors.append([graphX, graphY])
+                    neighbors.append(self.currPos)
+
+        # Right neighbor
+        reached = False
+        if tableY != (self.xsize -1):
+            if self.Matrix[tableX][tableY + 1] != 3:
+                graphX = self.tableToGraph(tableX, tableY+1)[0]
+                graphY = self.tableToGraph(tableX, tableY+1)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                if reached == False:
+                    neighbors.append([graphX, graphY])
+                    neighbors.append(self.currPos)
+
+        reached = False
+        if tableX != 0:
+            if self.Matrix[tableX-1][tableY] != 3:
+                graphX = self.tableToGraph(tableX-1, tableY)[0]
+                graphY = self.tableToGraph(tableX-1, tableY)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                if reached == False:
+                    neighbors.append([graphX, graphY])
+                    neighbors.append(self.currPos)
+
+        if len(neighbors) > 0:
+            neighbors.pop()
+        return(neighbors)
+
+    def test(self):
+        self.ax.add_patch(patches.Rectangle(xy=(0,1), width=1, height=1, linewidth=1, color='red', fill=True))
+
+    def DFS(self):
+        stack = [[1,1]]
+        visited = [[1,1]]
+#        print(stack[-1])
+        #print(self.getNeighbors(visited))
+        
+        while (len(stack) > 0):
+            neighbors = []
+            if self.currPos == visited[-1]:
+                run = True
+                neighbors = self.getNeighbors(visited)
+                for i in neighbors:
+                    stack.append(i)
+            else:
+                run = False
+            if run == True:
+                if len(neighbors) > 0:
+                    self.goto(stack[-1])
+                    inList = False
+                    for i in visited:
+                        if stack[-1] == i:
+                            inList = True
+                    if inList == False:
+                        visited.append(stack[-1])
+                #    print("New")
+                else:
+                    #stack.pop()
+                    #self.goto(stack[-1])
+                    stack.pop()
+                    self.goto(stack[-1])
+                    inList = False
+                    for i in visited:
+                        if stack[-1] == i:
+                            inList = True
+                    if inList == False:
+                        visited.append(stack[-1])
+                #    print("End")
+            else: 
+                stack.pop()
+                #print(stack)
+                self.goto(stack[-1])
+                inList = False
+                for i in visited:
+                    if stack[-1] == i:
+                        inList = True
+                if inList == False:
+                    visited.append(stack[-1])
+                #print("Run Back")
+            if self.currPos == self.endgoal:
+                #print("Reached!")
+                break
+
     # Shows the graph
     def showGraph(self):
+        #print(self.Matrix)
         plt.show()
-
-    
+        
+ 
 # Obstacle class
 class Obstacle():
     xcor = 0
@@ -87,14 +228,23 @@ class Obstacle():
     def getYcor(self):
         return(self.ycor)
 
-grid1 = Grid(5, 5)
-grid1.generate_Obstacle(2,2)
-grid1.generate_Obstacle(3,3)
-grid1.generate_Obstacle(4,4)
+grid1 = Grid(10, 10)
 
+'''for i in range(30):
+#    try:
+    x = rand.randint(1, 10)
+    y = rand.randint(1, 10)
+    grid1.generate_Obstacle(x,y)
+#    except:
+#        pdb.set_trace()
+
+'''
+#grid1.generate_Obstacle(2,2)
+#grid1.generate_Obstacle(3, 2)
 
 
 grid1.createEndGoal()
-
-
+#grid1.generate_Obstacle(1, 2)
+#grid1.test()
+grid1.DFS()
 grid1.showGraph()
