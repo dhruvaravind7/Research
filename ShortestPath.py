@@ -43,7 +43,7 @@ class Grid():
 
     def tableToGraph(self, xcor, ycor):
         newX = ycor + 1
-        newY = self.xsize - xcor
+        newY = self.ysize - xcor
         return([newX, newY])
     # Generates an obstacle object given the xcoordinate and y coordinate
     def generate_Obstacle(self, xcor, ycor):
@@ -81,6 +81,33 @@ class Grid():
         #print(self.Matrix)
         self.endgoal = [coordinates[0], coordinates[1]]
 
+    def checkEndGoal(self):
+        tableEndX = self.graphToTable(self.endgoal[0], self.endgoal[1])[0]
+        tableEndY = self.graphToTable(self.endgoal[0], self.endgoal[1])[1]
+        blocked = True
+        if tableEndY != 0:
+            if self.Matrix[tableEndX][tableEndY-1] != 3:
+                blocked = False
+
+        if tableEndX != (self.ysize - 1):
+            if self.Matrix[tableEndX+1][tableEndY] != 3:        
+                blocked = False
+
+        if tableEndX != 0:
+            if self.Matrix[tableEndX-1][tableEndY] != 3:
+                blocked = False
+
+        if tableEndY != (self.xsize -1):
+            if self.Matrix[tableEndX][tableEndY + 1] != 3:
+                blocked = False
+        
+        if blocked == True:
+            print("Enforced")
+            self.showGraph()
+
+
+
+#####################################################################################################################################################
     def goto(self, coordinates):
         #print(self.currPos)
         graphX = self.graphToTable(self.currPos[0], self.currPos[1])[0]
@@ -89,13 +116,13 @@ class Grid():
         
         newX = self.graphToTable(coordinates[0], coordinates[1])[0]
         newY = self.graphToTable(coordinates[0], coordinates[1])[1]
-        print(coordinates)
-        print(newX)
-        print(newY)
+        #print(coordinates)
+        #print(newX)
+        #print(newY)
         self.Matrix[newX][newY] = 1
 
-        xchange = [self.currPos[0] -0.5, coordinates[0] -0.5]
-        ychange = [self.currPos[1] -0.5, coordinates[1] -0.5]
+        #xchange = [self.currPos[0] -0.5, coordinates[0] -0.5]
+        #ychange = [self.currPos[1] -0.5, coordinates[1] -0.5]
 
         self.currPos = coordinates
 
@@ -233,6 +260,7 @@ class Grid():
         stack = [ [[1,1], [[1,1]] ] ]
         visited = []
         #Worked = False
+        self.checkEndGoal()
         FirstTime = True
 #        print(stack[-1])
         #print(self.getNeighbors(visited))
@@ -248,8 +276,6 @@ class Grid():
 
                 # Reach Destination
                 if self.currPos == self.endgoal:
-                    
-                    print("Current Path: "+ str(currNode[1]))
                     if FirstTime == True or len(shortestPath) > len(currNode[1]):
                         shortestPath = copy.deepcopy(currNode[1])
                         print("Shortest Path: " + str(shortestPath))
@@ -354,7 +380,7 @@ class Grid():
 
     # Shows the graph
     def showGraph(self):
-        #print(self.Matrix)
+        print(self.Matrix)
         plt.show()
         
  
@@ -372,17 +398,19 @@ class Obstacle():
     def getYcor(self):
         return(self.ycor)
 
-grid1 = Grid(4, 5)
+grid1 = Grid(10, 10)
 
-'''for i in range(1):
+
+
+for i in range(40):
 #    try:
-    x = rand.randint(1, 6)
-    y = rand.randint(1, 4)
+    x = rand.randint(1, 10)
+    y = rand.randint(1, 10)
     grid1.generate_Obstacle(x,y)
 #    except:
 #        pdb.set_trace()
 
-'''
+
 '''grid1.generate_Obstacle(1,3)
 grid1.generate_Obstacle(4,4)
 grid1.generate_Obstacle(1,3)
