@@ -398,14 +398,18 @@ class Obstacle():
     def getYcor(self):
         return(self.ycor)
 
-grid1 = Grid(10, 10)
+xsize = int(input("X axis length: "))
+ysize = int(input("Y axis length: "))
+numObstacles = int(input("Number of Obstacles: "))
+
+grid1 = Grid(xsize, ysize)
 
 
 
-for i in range(40):
+for i in range(numObstacles):
 #    try:
-    x = rand.randint(1, 10)
-    y = rand.randint(1, 10)
+    x = rand.randint(1, xsize)
+    y = rand.randint(1, ysize)
     grid1.generate_Obstacle(x,y)
 #    except:
 #        pdb.set_trace()
