@@ -104,8 +104,203 @@ class Grid():
         if blocked == True:
             print("Enforced")
             self.showGraph()
+##########################################################################################################################################################################
+    def getDIJNeighbors(self, currNode, visited, queue):
+        tableX = self.graphToTable(self.currPos[0], self.currPos[1])[0]
+        tableY = self.graphToTable(self.currPos[0], self.currPos[1])[1]
+        neighbors = []
+        reached = False
+        currpathway = currNode[1]
+
+        # Left neighbor
+        if tableY != 0:
+            if self.Matrix[tableX][tableY-1] != 3:
+                graphX = self.tableToGraph(tableX, tableY-1)[0]
+                graphY = self.tableToGraph(tableX, tableY-1)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+                if reached == False:    
+                    lpathway = copy.deepcopy(currpathway)
+                    lpathway.append([graphX, graphY])
+                    neighbors.append([[graphX, graphY], lpathway])
+                    
+        
+        
+        reached = False
+        # Botton neighbor
+        if tableX != (self.ysize - 1):
+            if self.Matrix[tableX+1][tableY] != 3:
+                graphX = self.tableToGraph(tableX+1, tableY)[0]
+                graphY = self.tableToGraph(tableX+1, tableY)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+
+                if reached == False:
+                    bpathway = copy.deepcopy(currpathway)
+                    bpathway.append([graphX, graphY])
+                    neighbors.append([[graphX, graphY], bpathway])
+
+        
+        
+        # Top neighbor
+        reached = False
+        if tableX != 0:
+            if self.Matrix[tableX-1][tableY] != 3:
+                graphX = self.tableToGraph(tableX-1, tableY)[0]
+                graphY = self.tableToGraph(tableX-1, tableY)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+                if reached == False:
+                    tpathway = copy.deepcopy(currpathway)
+                    tpathway.append([graphX, graphY])
+                    #print(currNode[1])
+                    neighbors.append([[graphX, graphY], tpathway])
+                    
+
+        # Right neighbor
+        reached = False
+        if tableY != (self.xsize -1):
+            if self.Matrix[tableX][tableY + 1] != 3:
+                graphX = self.tableToGraph(tableX, tableY+1)[0]
+                graphY = self.tableToGraph(tableX, tableY+1)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+
+                if reached == False:
+                    rpathway = copy.deepcopy(currpathway)
+                    rpathway.append([graphX, graphY])
+                    #print(currNode[1])
+                    neighbors.append([[graphX, graphY], rpathway])
 
 
+        #print(neighbors)
+        add = True
+
+        for node in neighbors:
+            for i in range(0, len(queue)):
+                if node[0] == queue[i][0]:
+                    if len(node[1]) > len(queue[i][1]):
+                        add = False
+
+            if add == True:
+                queue.append(node)
+            add = True
+        
+        if len(neighbors) != 0:
+            self.addedNeighbors = True
+
+        #print(stack)
+        return(queue)
+
+##########################################################################################################################################################################
+    def getBFSNeighbors(self, currNode, visited, queue):
+        tableX = self.graphToTable(self.currPos[0], self.currPos[1])[0]
+        tableY = self.graphToTable(self.currPos[0], self.currPos[1])[1]
+        neighbors = []
+        reached = False
+        currpathway = currNode[1]
+
+        # Left neighbor
+        if tableY != 0:
+            if self.Matrix[tableX][tableY-1] != 3:
+                graphX = self.tableToGraph(tableX, tableY-1)[0]
+                graphY = self.tableToGraph(tableX, tableY-1)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+                if reached == False:    
+                    lpathway = copy.deepcopy(currpathway)
+                    lpathway.append([graphX, graphY])
+                    neighbors.append([[graphX, graphY], lpathway])
+                    
+        
+        
+        reached = False
+        # Botton neighbor
+        if tableX != (self.ysize - 1):
+            if self.Matrix[tableX+1][tableY] != 3:
+                graphX = self.tableToGraph(tableX+1, tableY)[0]
+                graphY = self.tableToGraph(tableX+1, tableY)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+
+                if reached == False:
+                    bpathway = copy.deepcopy(currpathway)
+                    bpathway.append([graphX, graphY])
+                    neighbors.append([[graphX, graphY], bpathway])
+
+        
+        
+        # Top neighbor
+        reached = False
+        if tableX != 0:
+            if self.Matrix[tableX-1][tableY] != 3:
+                graphX = self.tableToGraph(tableX-1, tableY)[0]
+                graphY = self.tableToGraph(tableX-1, tableY)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+                if reached == False:
+                    tpathway = copy.deepcopy(currpathway)
+                    tpathway.append([graphX, graphY])
+                    #print(currNode[1])
+                    neighbors.append([[graphX, graphY], tpathway])
+                    
+
+        # Right neighbor
+        reached = False
+        if tableY != (self.xsize -1):
+            if self.Matrix[tableX][tableY + 1] != 3:
+                graphX = self.tableToGraph(tableX, tableY+1)[0]
+                graphY = self.tableToGraph(tableX, tableY+1)[1]
+                for i in visited:
+                    if i[0] == graphX and i[1] == graphY:
+                        reached = True
+                for j in queue:
+                    if j[0][0] == graphX and j[0][1] == graphY:
+                        reached = True
+
+                if reached == False:
+                    rpathway = copy.deepcopy(currpathway)
+                    rpathway.append([graphX, graphY])
+                    #print(currNode[1])
+                    neighbors.append([[graphX, graphY], rpathway])
+
+        #print(neighbors)
+        for node in neighbors:
+            queue.append(node)
+        
+        if len(neighbors) != 0:
+            self.addedNeighbors = True
+
+        #print(stack)
+        return(queue)
 
 #####################################################################################################################################################
     def goto(self, coordinates):
@@ -312,70 +507,74 @@ class Grid():
 
 
 
-        '''neighbors = []
-            if self.currPos == visited[-1]:
-                run = True
-                neighbors = self.getNeighbors(visited)
-                for i in neighbors:
-                    stack.append(i)
-            else:
-                run = False
-            if run == True:
-                if len(neighbors) > 0:
-                    self.goto(stack[-1])
-                    currPath.append(self.currPos)
-                    # Adds to visited
-                    inList = False
-                    for i in visited:
-                        if stack[-1] == i:
-                            inList = True
-                    if inList == False:
-                        visited.append(stack[-1])
-            
-                else:
-                    
-                    stack.pop()
-                    try:
-                        self.goto(stack[-1])
-                    except:
-                        break
-                    currPath.append(self.currPos)
-                    # Adds to visited
-                    inList = False
-                    for i in visited:
-                        if stack[-1] == i:
-                            inList = True
-                    if inList == False:
-                        visited.append(stack[-1])
-                
-            else: 
-                #try:
-                stack.pop()
-                #except:
-                #    pdb.set_trace()
-                #print(stack)
-                try:
-                    self.goto(stack[-1])
-                except:
-                    break
-                currPath.append(self.currPos)
-                # Adds to visited
-                inList = False
-                for i in visited:
-                    if stack[-1] == i:
-                        inList = True
-                if inList == False:
-                    visited.append(stack[-1])
-                
-            if self.currPos == self.endgoal:
-                #print("Reached!")
-                self.getShortestPath(currPath)
-                Worked = True
+############################################################################################################################################       
+    def BFS(self):
+        queue = [ [[1,1], [[1,1]] ] ]
+        visited = []
+        shortestPath = []
+        counter = 0
+        #Worked = False
+        self.checkEndGoal()
+        while len(queue) > 0:
+            if counter > self.xsize*self.ysize*self.xsize:
+                print("Did not finish")
+                print(counter)
                 break
+            currNode = queue[0]
+            curr = queue[0][0]
+            del queue[0]
 
-        print("Worked: " + str(Worked))'''
+            if (curr in visited) == False:
+                self.goto(curr)
+
+                if self.currPos == self.endgoal:
+                    shortestPath = currNode[1]
+                    break
+                else:
+                    visited.append(curr)
+                    queue = self.getBFSNeighbors(currNode, visited, queue)
+            #print(queue)
+            counter += 1
         
- 
+        print("Final Shortest Path: " + str(shortestPath))
+        for i in range(0, len(shortestPath)-1):
+            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "red")
+            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "red")
+
+#####################################################################################################################################################   
+
+    def Dijkstra(self):
+        queue = [ [[1,1], [[1,1]] ] ]
+        visited = []
+        shortestPath =[]
+        self.checkEndGoal()
+        while len(queue) > 0:
+            shortestLength = len(queue[0][1])
+            shortestPos = 0
+
+            for i in range(1, len(queue)):
+                if len(queue[i][1]) < shortestLength:
+                    shortestPos = i
+                    shortestLength = len(queue[i][1])
+            
+            currNode = queue[shortestPos]
+            del queue[shortestPos]
+            self.goto(currNode[0])
+
+            if self.currPos == self.endgoal:
+                shortestPath = currNode[1]
+                break
+            else:
+                visited.append(currNode[0])
+                queue = self.getDIJNeighbors(currNode, visited, queue)
+
+        #print("Final Shortest Path: " + str(shortestPath))
+        for i in range(0, len(shortestPath)-1):
+            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "red")
+            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "red")
+
+
+
 
 
     # Shows the graph
@@ -428,5 +627,5 @@ grid1.generate_Obstacle(2, 3)'''
 grid1.createEndGoal()
 #grid1.generate_Obstacle(1, 2)
 #grid1.test()
-grid1.DFS()
+grid1.Dijkstra()
 grid1.showGraph()
