@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 import random as rand
+import math
 import copy
 
 #xpoints = np.array([0, 10])
@@ -46,6 +47,31 @@ class Grid():
         newY = self.ysize - xcor
         return([newX, newY])
     # Generates an obstacle object given the xcoordinate and y coordinate
+
+    def generate_Cup(self, xcor, ycor):
+        self.ax.add_patch(patches.Rectangle(xy=(xcor-1, ycor-1), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor, ycor)[0]][self.graphToTable(xcor, ycor)[1]] = 3
+        self.ax.add_patch(patches.Rectangle(xy=(xcor, ycor-1), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor+1, ycor)[0]][self.graphToTable(xcor+1, ycor)[1]] = 3
+        self.ax.add_patch(patches.Rectangle(xy=(xcor+1, ycor-1), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor+2, ycor)[0]][self.graphToTable(xcor+2, ycor)[1]] = 3
+
+
+        self.ax.add_patch(patches.Rectangle(xy=(xcor+2, ycor), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor+3, ycor+1)[0]][self.graphToTable(xcor+3, ycor+1)[1]] = 3
+        self.ax.add_patch(patches.Rectangle(xy=(xcor+2, ycor+1), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor+3, ycor+2)[0]][self.graphToTable(xcor+3, ycor+2)[1]] = 3
+
+        self.ax.add_patch(patches.Rectangle(xy=(xcor+1, ycor+2), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor+2, ycor+3)[0]][self.graphToTable(xcor+2, ycor+3)[1]] = 3
+        self.ax.add_patch(patches.Rectangle(xy=(xcor-1, ycor+2), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor, ycor+3)[0]][self.graphToTable(xcor, ycor+3)[1]] = 3
+        self.ax.add_patch(patches.Rectangle(xy=(xcor, ycor+2), width=1, height=1, linewidth=1, color='red', fill=True))
+        self.Matrix[self.graphToTable(xcor+1, ycor+3)[0]][self.graphToTable(xcor+1, ycor+3)[1]] = 3
+ 
+
+
+
     def generate_Obstacle(self, xcor, ycor):
         if xcor == 1:
             if ycor == 1:
@@ -447,6 +473,18 @@ class Grid():
         for i in range(0, len(shortestPath)-1):
             self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "red")
             self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "red")
+#################################################################################################################################################
+    def MHueristics(self, coordinates):
+        xpoints = abs(coordinates[0] - self.endgoal[0])
+        ypoints = abs(coordinates[1] - self.endgoal[1])
+        return(xpoints + ypoints+xpoints + ypoints)
+    
+    def EHueristics(self, coordinates):
+        xpoints = abs(coordinates[0] - self.endgoal[0])
+        ypoints = abs(coordinates[1] - self.endgoal[1])
+        distance = (xpoints*xpoints) + (ypoints * ypoints)
+        return(distance)
+
 
 #################################################################################################################################################
     def DFS(self):
@@ -570,11 +608,90 @@ class Grid():
 
         #print("Final Shortest Path: " + str(shortestPath))
         for i in range(0, len(shortestPath)-1):
-            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "red")
-            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "red")
+            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "green")
+            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "green")
 
 
+######################################################################################################################################################xx``
 
+
+    def Manhattan(self):
+        queue = [ [[1,1], [[1,1]] ] ]
+        visited = []
+        shortestPath = []
+        currPath = []
+        self.checkEndGoal()
+        while len(queue) > 0:
+            shortestLength = self.MHueristics(queue[0][0]) + int(len(queue[0][1]))
+            shortestPos = 0
+
+            for i in range(1, len(queue)):
+                distance = self.MHueristics(queue[i][0]) + int(len(queue[i][1]))
+                if distance <= shortestLength:
+                    shortestPos = i
+                    shortestLength = distance
+            
+            currNode = queue[shortestPos]
+            del queue[shortestPos]
+            self.goto(currNode[0])
+            currPath.append(currNode[0])
+
+            if self.currPos == self.endgoal:
+                shortestPath = currNode[1]
+                break
+            else:
+                visited.append(currNode[0])
+                queue = self.getDIJNeighbors(currNode, visited, queue)
+
+        #print("Final Shortest Path: " + str(shortestPath))
+        '''for i in range(0, len(shortestPath)-1):
+            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "green")
+            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "green")
+        '''
+        for i in range(0, len(currPath)-1):
+            self.ax.plot([currPath[i][0]-0.25, currPath[i+1][0]-0.25] , [currPath[i][1]-0.25, currPath[i+1][1]-0.25], color= "black")
+            self.ax.plot(currPath[i+1][0]-0.25, currPath[i+1][1]-0.25, "o", color = "black")
+
+        #self.Dijkstra()
+
+    def Euclidian(self):
+        queue = [ [[1,1], [[1,1]] ] ]
+        visited = []
+        shortestPath = []
+        currPath = []
+        self.checkEndGoal()
+        while len(queue) > 0:
+            shortestLength = int(self.EHueristics(queue[0][0])) + int(len(queue[0][1]))
+            shortestPos = 0
+
+            for i in range(1, len(queue)):
+                distance = int(self.EHueristics(queue[i][0])) + int(len(queue[i][1]))
+                if distance <= shortestLength:
+                    shortestPos = i
+                    shortestLength = distance
+            
+            currNode = queue[shortestPos]
+            del queue[shortestPos]
+            self.goto(currNode[0])
+            currPath.append(currNode[0])
+
+            if self.currPos == self.endgoal:
+                shortestPath = currNode[1]
+                break
+            else:
+                visited.append(currNode[0])
+                queue = self.getDIJNeighbors(currNode, visited, queue)
+
+        #print("Final Shortest Path: " + str(shortestPath))
+        '''for i in range(0, len(shortestPath)-1):
+            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "green")
+            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "green")
+        '''
+        for i in range(0, len(currPath)-1):
+            self.ax.plot([currPath[i][0]-0.75, currPath[i+1][0]-0.75] , [currPath[i][1]-0.75, currPath[i+1][1]-0.75], color= "green")
+            self.ax.plot(currPath[i+1][0]-0.75, currPath[i+1][1]-0.75, "o", color = "green")
+
+        #self.Dijkstra()
 
 
     # Shows the graph
@@ -613,6 +730,7 @@ for i in range(numObstacles):
 #    except:
 #        pdb.set_trace()
 
+grid1.generate_Cup(2,2)
 
 '''grid1.generate_Obstacle(1,3)
 grid1.generate_Obstacle(4,4)
@@ -624,8 +742,11 @@ grid1.generate_Obstacle(2, 3)'''
 #grid1.generate_Obstacle(3, 2)
 
 
-grid1.createEndGoal()
+#grid1.createEndGoal()
+grid1.chooseEndGoal([5, 2])
+grid1.generate_Obstacle(2,1)
 #grid1.generate_Obstacle(1, 2)
 #grid1.test()
-grid1.Dijkstra()
+#grid1.Euclidian()
+grid1.Manhattan()
 grid1.showGraph()
