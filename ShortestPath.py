@@ -732,6 +732,7 @@ for i in range(numObstacles):
 
 grid1.generate_Cup(2,2)
 
+grid1.generate_Cup(6,6)
 '''grid1.generate_Obstacle(1,3)
 grid1.generate_Obstacle(4,4)
 grid1.generate_Obstacle(1,3)
@@ -743,10 +744,10 @@ grid1.generate_Obstacle(2, 3)'''
 
 
 #grid1.createEndGoal()
-grid1.chooseEndGoal([5, 2])
+grid1.chooseEndGoal([9, 9])
 grid1.generate_Obstacle(2,1)
 #grid1.generate_Obstacle(1, 2)
 #grid1.test()
-#grid1.Euclidian()
-grid1.Manhattan()
+grid1.Euclidian()
+#grid1.Manhattan()
 grid1.showGraph()
