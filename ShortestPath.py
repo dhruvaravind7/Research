@@ -1,3 +1,4 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
@@ -493,7 +494,7 @@ class Grid():
         stack = [ [[1,1], [[1,1]] ] ]
         visited = []
         #Worked = False
-        self.checkEndGoal()
+        #self.checkEndGoal()
         FirstTime = True
 #        print(stack[-1])
         #print(self.getNeighbors(visited))
@@ -576,8 +577,8 @@ class Grid():
         
         print("Final Shortest Path: " + str(shortestPath))
         for i in range(0, len(shortestPath)-1):
-            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "red")
-            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "red")
+            self.ax.plot([shortestPath[i][0]-0.5, shortestPath[i+1][0]-0.5] , [shortestPath[i][1]-0.5, shortestPath[i+1][1]-0.5], color= "green")
+            self.ax.plot(shortestPath[i+1][0]-0.5, shortestPath[i+1][1]-0.5, "o", color = "green")
 
 #####################################################################################################################################################   
 
@@ -730,9 +731,9 @@ for i in range(numObstacles):
 #    except:
 #        pdb.set_trace()
 
-grid1.generate_Cup(2,2)
+#grid1.generate_Cup(2,2)
 
-grid1.generate_Cup(6,6)
+#grid1.generate_Cup(6,6)
 '''grid1.generate_Obstacle(1,3)
 grid1.generate_Obstacle(4,4)
 grid1.generate_Obstacle(1,3)
@@ -743,11 +744,11 @@ grid1.generate_Obstacle(2, 3)'''
 #grid1.generate_Obstacle(3, 2)
 
 
-#grid1.createEndGoal()
-grid1.chooseEndGoal([9, 9])
-grid1.generate_Obstacle(2,1)
+grid1.createEndGoal()
+#grid1.chooseEndGoal([9, 9])
+#grid1.generate_Obstacle(2,1)
 #grid1.generate_Obstacle(1, 2)
 #grid1.test()
-grid1.Euclidian()
+grid1.Dijkstra()
 #grid1.Manhattan()
 grid1.showGraph()
