@@ -667,7 +667,7 @@ class Grid():
                 queue = self.getDIJNeighbors(currNode, visited, queue)
 
         #print("Final Shortest Path: " + str(shortestPath))
-        del shortestPath[-1]
+        #del shortestPath[-1]
         return(shortestPath)
 
 ######################################################################################################################################################xx``
@@ -763,8 +763,8 @@ class Grid():
         startcoor = self.graphToTable(self.startpoint[0], self.startpoint[1])
         endcoor = self.graphToTable(self.endgoal[0], self.endgoal[1])
         tempMatrix = copy.deepcopy(self.Matrix)
-        print(startcoor)
-        print(endcoor)
+        #print(startcoor)
+        #print(endcoor)
         tempMatrix[startcoor[0]][startcoor[1]] = 0
         tempMatrix[endcoor[0]][endcoor[1]] = 0
         return(tempMatrix)        
