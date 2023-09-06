@@ -784,7 +784,8 @@ class Obstacle():
         return(self.ycor)
 
 
-
+import pdb
+import pickle
 
 num_points_desired = 1
 dataset = []
@@ -793,25 +794,26 @@ for i in range(num_points_desired):
     yaxis = 6
     start = [rand.randint(1, xaxis), rand.randint(1, yaxis)]
     goal = [rand.randint(1, xaxis), rand.randint(1, yaxis)]
+    if goal == start:
+        goal = [rand.randint(1, xaxis), rand.randint(1, yaxis)]
     num_obstacles = rand.randint(1, 5)
     grid = Grid(xaxis, yaxis, num_obstacles, start, goal)
 
     pathway = grid.Dijkstra_ML()
-    scenario_dataset = []
-    print(grid.returnGraph())
-    print(grid.returnGraphObstacles())
-    print(pathway)
-    grid.showGraph()
-    
-    
-    
-    '''for point in pathway:
-        d = [grid.returnGraph(), start, goal, point]
-        scenario_dataset.append(d)
-    dataset.append(scenario_dataset)
+    scenario_datasetx = []   
+    scenario_datasety = []
 
+    for point in pathway:
+        d = [grid.returnGraphObstacles(), start, goal]
+        scenario_datasetx.append(d)
+        scenario_datasety.append(point)
+    dataset.append([scenario_datasetx, scenario_datasety])
 
-'''
+print(dataset)
+
+with open("datasetShortestPath", "wb") as fp:   #Pickling
+   pickle.dump(dataset, fp)
+
 
 
 
