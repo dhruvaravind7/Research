@@ -787,7 +787,7 @@ class Obstacle():
 import pdb
 import pickle
 
-num_points_desired = 1
+num_points_desired = 50
 dataset = []
 for i in range(num_points_desired):
     xaxis = 6
@@ -811,10 +811,11 @@ for i in range(num_points_desired):
 
 print(dataset)
 
+
 with open("datasetShortestPath", "wb") as fp:   #Pickling
    pickle.dump(dataset, fp)
 
-
+print("ehllo")
 
 
 
